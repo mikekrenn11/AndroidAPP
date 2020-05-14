@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -20,6 +21,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView viewAlt;
     private TextView viewAz;
     private Spinner spinnerPlanet;
+    private Button settingsBTN;
     //Device location
     private double longitude;
     private double latitude;
@@ -73,11 +76,21 @@ public class MainActivity extends AppCompatActivity {
         viewAlt = (TextView) findViewById(R.id.textALT);
         viewAz = (TextView) findViewById(R.id.textAZ);
         planetIcon = (ImageView) findViewById(R.id.planetExampleIcon);
+        settingsBTN = (Button) findViewById(R.id.settingsBTN);
         //Init Dropdown menu
         spinnerPlanet = (Spinner) findViewById(R.id.planetChooser);
         ArrayAdapter<String> planetAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.planetNames));
         planetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPlanet.setAdapter(planetAdapter);
+
+        //settings onclick listner
+        settingsBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettingsActivity();
+            }
+        });
+
 
         //Dropdown listener handler
         spinnerPlanet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -188,6 +201,12 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
         }
+    }
+
+    //opens settings Activity
+    public void openSettingsActivity(){
+    Intent intent = new Intent(this, SettingsActivity.class);
+    startActivity(intent);
     }
 
     //creates a new Planet
