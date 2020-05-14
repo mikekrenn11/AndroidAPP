@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">M335Projekt</string>
+
+    <string-array name="planetNames">
+        <item>Sun</item>
+        <item>Moon</item>
+        <item>Mercury</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+        <item>Pluto</item>
+    </string-array>
+</resources>
