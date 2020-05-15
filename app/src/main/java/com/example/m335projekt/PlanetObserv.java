@@ -15,16 +15,18 @@ public class PlanetObserv {
     private Python py;
     private PyObject pyf;
     private String planetName;
+    private ImageView planetIcon;
 
-
-    PlanetObserv(String planetName){
+    PlanetObserv(String planetName, ImageView planetIcon) {
 
         py = Python.getInstance();
         pyf = py.getModule("planetary"); //Python file name
         this.planetName = planetName;
+        this.planetIcon = planetIcon;
+        changeIconDependingOnPlanet();
     }
 
-    public int[] getAltAndAz(double longitude,double latitude){
+    public int[] getAltAndAz(double longitude, double latitude) {
         PyObject obj = pyf.callAttr("planetInfo", longitude, latitude, this.planetName); //methode name
         String altAndAzDegree = obj.toString();
 
@@ -36,39 +38,39 @@ public class PlanetObserv {
         int altitude = Integer.parseInt(altitudeSplit[1]);
         int azimuth = Integer.parseInt(azimuthSplit[1]);
 
-        return new int[]{altitude,azimuth};
+        return new int[]{altitude, azimuth};
 
     }
 
-    public void changeIconDependingOnPlanet(ImageView imageView){
+    public void changeIconDependingOnPlanet() {
 
-        switch (planetName){
+        switch (planetName) {
             case "Sun":
-                imageView.setImageResource(R.drawable.sunimage);
+                planetIcon.setImageResource(R.drawable.sunimage);
                 break;
             case "Moon":
-                imageView.setImageResource(R.drawable.moonimage);
+                planetIcon.setImageResource(R.drawable.moonimage);
                 break;
             case "Mercury":
-                imageView.setImageResource(R.drawable.mercuryimage);
+                planetIcon.setImageResource(R.drawable.mercuryimage);
                 break;
             case "Mars":
-                imageView.setImageResource(R.drawable.marsimage);
+                planetIcon.setImageResource(R.drawable.marsimage);
                 break;
             case "JUPITER BARYCENTER":
-                imageView.setImageResource(R.drawable.jupiterimage);
+                planetIcon.setImageResource(R.drawable.jupiterimage);
                 break;
             case "Saturn BARYCENTER":
-                imageView.setImageResource(R.drawable.saturnimage);
+                planetIcon.setImageResource(R.drawable.saturnimage);
                 break;
             case "Uranus BARYCENTER":
-                imageView.setImageResource(R.drawable.uranusimage);
+                planetIcon.setImageResource(R.drawable.uranusimage);
                 break;
             case "Neptune BARYCENTER":
-                imageView.setImageResource(R.drawable.neptunimage);
+                planetIcon.setImageResource(R.drawable.neptunimage);
                 break;
             case "Pluto BARYCENTER":
-                imageView.setImageResource(R.drawable.plutoimage);
+                planetIcon.setImageResource(R.drawable.plutoimage);
                 break;
 
         }

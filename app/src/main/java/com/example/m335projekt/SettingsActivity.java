@@ -34,7 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
         aboutBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            aboutScreen();
+                aboutScreen();
             }
         });
 
@@ -47,19 +47,19 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
 
-    public void backToMainActivity(){
+    public void backToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    public void aboutScreen(){
+    public void aboutScreen() {
         Intent intent = new Intent(this, ScreenAbout.class);
         startActivity(intent);
     }
 
-    public void openDialog(){
+    public void openDialog() {
         Dialog dialog = new Dialog();
-        dialog.show(getSupportFragmentManager(),"dialog");
+        dialog.show(getSupportFragmentManager(), "dialog");
         multiTextline.setText("");
     }
 }

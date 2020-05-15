@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/yawCircle"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="383dp"
+        android:layout_height="439dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,8 +19,8 @@
 
     <ImageView
         android:id="@+id/stationaryInnerRing"
-        android:layout_width="312dp"
-        android:layout_height="303dp"
+        android:layout_width="370dp"
+        android:layout_height="375dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -31,8 +31,8 @@
 
     <ImageView
         android:id="@+id/planetExampleIcon"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="121dp"
+        android:layout_height="113dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,38 +40,37 @@
 
     <ImageView
         android:id="@+id/pitchLocation"
-        android:layout_width="120dp"
-        android:layout_height="139dp"
+        android:layout_width="504dp"
+        android:layout_height="665dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="?android:attr/listChoiceIndicatorSingle" />
+        app:srcCompat="@drawable/innermidlecircle" />
 
     <TextView
         android:id="@+id/textALT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="8dp"
         android:text="TextView"
         android:textColor="#CBCBCB"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textAZ"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintHorizontal_bias="0.059"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textAZ"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
         android:text="TextView"
         android:textColor="#CBCBCB"
-        app:layout_constraintBottom_toTopOf="@+id/textALT"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.045"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/yawCircle"
-        app:layout_constraintVertical_bias="0.941" />
+        app:layout_constraintHorizontal_bias="0.059"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
         android:id="@+id/planetChooser"

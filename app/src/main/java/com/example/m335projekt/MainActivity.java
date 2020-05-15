@@ -1,9 +1,9 @@
 package com.example.m335projekt;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +15,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -25,8 +24,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
+
 import static java.lang.Math.round;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     //Location sensor variables
     LocationManager locationManager;
     LocationListener locationListener;
-
     //Magnetic and gravitational sensor variables
     private SensorManager sensorManager;
     private SensorEventListener sensorlistener;
@@ -70,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Loads python information into Java
+        if (!Python.isStarted()) {
+            Python.start(new AndroidPlatform(this));
+        }
+
         //Init views
         pitchCirlce = (ImageView) findViewById(R.id.pitchLocation);
         yawCircle = (ImageView) findViewById(R.id.yawCircle);
@@ -77,13 +82,14 @@ public class MainActivity extends AppCompatActivity {
         viewAz = (TextView) findViewById(R.id.textAZ);
         planetIcon = (ImageView) findViewById(R.id.planetExampleIcon);
         settingsBTN = (Button) findViewById(R.id.settingsBTN);
+
         //Init Dropdown menu
         spinnerPlanet = (Spinner) findViewById(R.id.planetChooser);
         ArrayAdapter<String> planetAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.planetNames));
         planetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPlanet.setAdapter(planetAdapter);
 
-        //settings onclick listner
+        //settings onclick listener
         settingsBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,13 +97,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         //Dropdown listener handler
         spinnerPlanet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 planetObserv = null;
-                switch (position){
+                switch (position) {
                     case 0:
                         //Sun first position
                         createPlanetToObserve("Sun");
@@ -139,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
                         createPlanetToObserve("Sun");
                         break;
                 }
-
             }
 
             @Override
@@ -149,11 +153,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Loads python information into Java
-        if (!Python.isStarted()) {
-            Python.start(new AndroidPlatform(this));
-        }
-
         //Location manager and Location stuff
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
@@ -161,16 +160,21 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 longitude = location.getLongitude();
                 latitude = location.getLatitude();
-                if (planetObserv != null){
-                    int[] altAndAz = planetObserv.getAltAndAz(longitude,latitude);
+                if (planetObserv != null) {
+                    int[] altAndAz = planetObserv.getAltAndAz(longitude, latitude);
                     planetAltitude = altAndAz[0];
                     planetAzimuth = altAndAz[1];
                 }
             }
+
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
             @Override
-            public void onProviderEnabled(String provider) {}
+            public void onProviderEnabled(String provider) {
+            }
+
             @Override
             public void onProviderDisabled(String provider) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -204,15 +208,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //opens settings Activity
-    public void openSettingsActivity(){
-    Intent intent = new Intent(this, SettingsActivity.class);
-    startActivity(intent);
+    public void openSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     //creates a new Planet
     public void createPlanetToObserve(String planetName) {
-        planetObserv = new PlanetObserv(planetName);
-        planetObserv.changeIconDependingOnPlanet(planetIcon);
+        planetObserv = new PlanetObserv(planetName, planetIcon);
     }
 
     //onPause
@@ -228,50 +231,47 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //Sensor magnetic and gravitational
         sensorManager = getSystemService(SensorManager.class);
-            sensorlistener = new SensorEventListener() {
-                @Override
-                public void onSensorChanged(SensorEvent event) {
-                    switch (event.sensor.getType()) {
-                        case Sensor.TYPE_MAGNETIC_FIELD:
-                            mags = event.values.clone();
-                            break;
-                        case Sensor.TYPE_ACCELEROMETER:
-                            accels = event.values.clone();
-                            break;
-                    }
-
-                    //some math to calculate the current Rotation of the device
-                    if (mags != null && accels != null) {
-                        gravity = new float[9];
-                        magnetic = new float[9];
-                        SensorManager.getRotationMatrix(gravity, magnetic, accels, mags);
-                        float[] outGravity = new float[9];
-                        SensorManager.remapCoordinateSystem(gravity, SensorManager.AXIS_X,SensorManager.AXIS_Z, outGravity);
-                        SensorManager.getOrientation(outGravity, values);
-
-                        azimuth = values[0] * 57.2957795f;
-                        pitch =values[1] * 57.2957795f;
-                        roll = values[2] * 57.2957795f;
-                        mags = null;
-                        accels = null;
-                    }
-                    //rotates the Circle in the middle of the screen (view)
-                    changeViewBasedOnRotationAndLocation();
+        sensorlistener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                switch (event.sensor.getType()) {
+                    case Sensor.TYPE_MAGNETIC_FIELD:
+                        mags = event.values.clone();
+                        break;
+                    case Sensor.TYPE_ACCELEROMETER:
+                        accels = event.values.clone();
+                        break;
                 }
 
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                //some math to calculate the current Rotation of the device
+                if (mags != null && accels != null) {
+                    gravity = new float[9];
+                    magnetic = new float[9];
+                    SensorManager.getRotationMatrix(gravity, magnetic, accels, mags);
+                    float[] outGravity = new float[9];
+                    SensorManager.remapCoordinateSystem(gravity, SensorManager.AXIS_X, SensorManager.AXIS_Z, outGravity);
+                    SensorManager.getOrientation(outGravity, values);
 
+                    azimuth = values[0] * 57.2957795f;
+                    pitch = values[1] * 57.2957795f;
+                    roll = values[2] * 57.2957795f;
+                    mags = null;
+                    accels = null;
                 }
-            };
-            sensorManager.registerListener(sensorlistener,sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
-            sensorManager.registerListener(sensorlistener,sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_NORMAL);
+                //rotates the Circle in the middle of the screen (view)
+                changeViewBasedOnRotationAndLocation();
+            }
 
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            }
+        };
+        sensorManager.registerListener(sensorlistener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(sensorlistener, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-
     //Changes the view rotation and position of certain images in the view
-    private void changeViewBasedOnRotationAndLocation(){
+    private void changeViewBasedOnRotationAndLocation() {
         /*
         IMPORTANT!
         The roll and pitch Parameter are different when deploying on a real Device !
@@ -279,10 +279,10 @@ public class MainActivity extends AppCompatActivity {
 
         This is setup for the Emulator!
          */
-        yawCircle.setRotation(planetAzimuth+(round((roll*-1))));
-        pitchCirlce.setTranslationY(planetAltitude+(round(pitch*-1)));
-        viewAlt.setText("Altitude: "+planetAltitude);
-        viewAz.setText("Azimuth: "+planetAzimuth);
+        yawCircle.setRotation(planetAzimuth + (round((roll * -1))));
+        pitchCirlce.setTranslationY(planetAltitude + (round(pitch * -1)));
+        viewAlt.setText("Altitude: " + planetAltitude);
+        viewAz.setText("Azimuth: " + planetAzimuth);
     }
 
 }

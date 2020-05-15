@@ -9,8 +9,8 @@ import android.widget.Button;
 
 public class ScreenAbout extends AppCompatActivity {
 
-
     private Button backBTN;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,12 +20,12 @@ public class ScreenAbout extends AppCompatActivity {
         backBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            goBackToSettings();
+                goBackToSettings();
             }
         });
     }
 
-    public void goBackToSettings(){
+    public void goBackToSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
