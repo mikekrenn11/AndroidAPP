@@ -74,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
             Python.start(new AndroidPlatform(this));
         }
 
-
-
-
         //Init views
         pitchCircle = (ImageView) findViewById(R.id.pitchLocation);
         yawCircle = (ImageView) findViewById(R.id.yawCircle);
@@ -227,8 +224,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener((SensorEventListener) this);
-        locationManager.removeUpdates(locationListener);
+        // sensorManager.unregisterListener((SensorEventListener) this); //doesnt work needs a fix
+         locationManager.removeUpdates(locationListener);
     }
 
     //onResume
