@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -33,8 +32,8 @@ import static java.lang.Math.round;
 public class MainActivity extends AppCompatActivity {
 
     //Location sensor variables
-    LocationManager locationManager;
-    LocationListener locationListener;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
     //Magnetic and gravitational sensor variables
     private SensorManager sensorManager;
     private SensorEventListener sensorlistener;
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     //view variables
     private ImageView planetIcon;
     private ImageView yawCircle;
-    private ImageView pitchCirlce;
+    private ImageView pitchCircle;
     private TextView viewAlt;
     private TextView viewAz;
     private Spinner spinnerPlanet;
@@ -76,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Init views
-        pitchCirlce = (ImageView) findViewById(R.id.pitchLocation);
+        pitchCircle = (ImageView) findViewById(R.id.pitchLocation);
         yawCircle = (ImageView) findViewById(R.id.yawCircle);
         viewAlt = (TextView) findViewById(R.id.textALT);
         viewAz = (TextView) findViewById(R.id.textAZ);
@@ -153,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Location manager and Location stuff
+        //Location manager and listener
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
@@ -222,6 +221,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        sensorManager.unregisterListener((SensorEventListener) this);
+        locationManager.removeUpdates(locationListener);
     }
 
     //onResume
@@ -279,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         This is setup for the Emulator!
          */
         yawCircle.setRotation(planetAzimuth + (round((roll * -1))));
-        pitchCirlce.setTranslationY(planetAltitude + (round(pitch * -1)));
+        pitchCircle.setTranslationY(planetAltitude + (round(pitch * -1)));
         viewAlt.setText("Altitude: " + planetAltitude);
         viewAz.setText("Azimuth: " + planetAzimuth);
     }
