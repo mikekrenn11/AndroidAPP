@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -68,11 +69,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //Loads python information into Java
         if (!Python.isStarted()) {
             Python.start(new AndroidPlatform(this));
         }
+
+
+
 
         //Init views
         pitchCircle = (ImageView) findViewById(R.id.pitchLocation);
@@ -212,9 +215,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //creates a new Planet
+    //creates a new Planet and init the first location
     public void createPlanetToObserve(String planetName) {
         planetObserv = new PlanetObserv(planetName, planetIcon);
+        int[] altAndAz = planetObserv.getAltAndAz(longitude, latitude);
+        planetAltitude = altAndAz[0];
+        planetAzimuth = altAndAz[1];
     }
 
     //onPause
